@@ -3,12 +3,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
-const xss = require('xss-clean');
+const sanitizeBody = require('./utils/sanitize');
 const mongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
 
 const AppError = require('./utils/appError');
 const visaRoutes = require('./routes/visa.routes');
+const userRoutes = require('./routes/user.routes');
 const globalErrorHandler = require('./controllers/error.controller');
 
 const app = express();
@@ -28,8 +29,12 @@ app.use(
     crossOriginEmbedderPolicy: false,
   })
 );
-app.use(xss());
-app.use(mongoSanitize());
+app.use((req, res, next) => {
+  req.body = mongoSanitize.sanitize(req.body, { replaceWith: '_' });
+  req.params = mongoSanitize.sanitize(req.params, { replaceWith: '_' });
+  next();
+});
+app.use(sanitizeBody);
 
 // Rate limiting
 const limiter = rateLimit({
@@ -91,11 +96,12 @@ const connectDB = async () => {
 connectDB();
 
 app.use('/api/visa', visaRoutes);
+app.use('/api/users', userRoutes);
 
 // 404 handler
-app.all('/*\w', (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
-});
+// app.all('/*\w', (req, res, next) => {
+//   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
+// });
 
 // Global error handler
 app.use(globalErrorHandler);

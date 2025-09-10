@@ -3,6 +3,7 @@ const Visa = require('../models/Visa');
 const AppError = require('../utils/appError');
 
 exports.getVisa = catchAsync(async (req, res, next) => {
+  console.log(req);
   const { slug } = req.params;
   const visa = await Visa.findOne({ slug });
 
