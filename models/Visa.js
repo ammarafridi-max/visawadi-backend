@@ -1,10 +1,50 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-const VisaSchema = mongoose.Schema({
-  name: { type: String, unique: true, required: [true, 'Visa name is required']},
-  slug:{ type: String, unique: true, required: [true, 'Visa name is required']}
-})
+const VisaSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true, unique: true },
+    slug: { type: String, required: true, unique: true },
+    description: { type: String, required: true },
+    featuredImage: { type: String },
 
-const Visa = mongoose.model('visa', VisaSchema)
+    quickFacts: {
+      validity: { type: String },
+      processingTime: { type: String },
+      numberOfCountries: { type: String },
+      visaType: { type: String },
+    },
 
-module.exports = Visa
+    testimonials: [
+      {
+        title: { type: String },
+        name: { type: String },
+        purpose: { type: String },
+        text: { type: String },
+      },
+    ],
+
+    faqs: [
+      {
+        question: { type: String },
+        answer: { type: String },
+      },
+    ],
+
+    packages: [
+      {
+        name: { type: String, required: true },
+        description: { type: String },
+        recommended: { type: Boolean, default: false },
+        inclusions: [{ type: String }],
+        exclusions: [{ type: String }],
+        pricing: {
+          price: { type: Number, required: true },
+          type: { type: String },
+        },
+      },
+    ],
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model('Visa', VisaSchema);
