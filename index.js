@@ -95,7 +95,7 @@ const connectDB = async () => {
 };
 connectDB();
 
-app.use('/api/visa', visaRoutes);
+app.use('/api/visas', visaRoutes);
 app.use('/api/users', userRoutes);
 
 // 404 handler
