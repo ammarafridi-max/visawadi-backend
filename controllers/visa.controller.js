@@ -13,7 +13,7 @@ exports.getAllVisas = catchAsync(async (req, res, next) => {
     status: 'success',
     message: 'All visas fetched successfully',
     results: visas.length,
-    data: { visas },
+    data: visas,
   });
 });
 
@@ -28,7 +28,7 @@ exports.getVisa = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     message: 'Visa details fetched successfully',
-    data: { visa },
+    data: visa,
   });
 });
 
@@ -38,7 +38,7 @@ exports.createVisa = catchAsync(async (req, res, next) => {
   res.status(201).json({
     status: 'success',
     message: 'Visa created successfully',
-    data: { visa },
+    data: visa,
   });
 });
 
@@ -50,13 +50,13 @@ exports.updateVisa = catchAsync(async (req, res, next) => {
   });
 
   if (!visa) {
-    return next(new AppError('No visa found with that ID', 404));
+    return next(new AppError('No visa found with that slug', 404));
   }
 
   res.status(200).json({
     status: 'success',
     message: 'Visa updated successfully',
-    data: { visa },
+    data: visa,
   });
 });
 
@@ -65,12 +65,8 @@ exports.deleteVisa = catchAsync(async (req, res, next) => {
   const visa = await Visa.findOneAndDelete({ slug });
 
   if (!visa) {
-    return next(new AppError('No visa found with that ID', 404));
+    return next(new AppError('No visa found with that slug', 404));
   }
 
-  res.status(204).json({
-    status: 'success',
-    message: 'Visa deleted successfully',
-    data: null,
-  });
+  res.status(204).end();
 });

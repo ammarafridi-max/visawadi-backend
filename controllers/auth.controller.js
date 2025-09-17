@@ -135,14 +135,17 @@ exports.currentUserInfo = catchAsync(async (req, res, next) => {
 });
 
 exports.updateCurrentUser = catchAsync(async (req, res, next) => {
+  if (req.body.password || req.body.passwordConfirm) {
+    return next(
+      new AppError('Please use another route for updating password', 403)
+    );
+  }
+
   const user = await User.findByIdAndUpdate(req.user.id, req.body, {
     new: true,
     runValidators: true,
   });
-  if (req.body.password)
-    return next(
-      new AppError('Please use another route for updating password', 403)
-    );
+
   if (!user) return next(new AppError('Could not find user', 404));
   res.status(200).json({
     status: 'success',

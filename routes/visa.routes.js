@@ -15,8 +15,8 @@ router
   .route('/:slug')
   .get(visaController.getVisa)
   .patch(
-    authController.protect,
-    authController.restrictTo('admin'),
+    // authController.protect,
+    // authController.restrictTo('admin'),
     visaController.updateVisa
   )
   .delete(
